@@ -27,6 +27,7 @@ func ExampleNewCertificate_server() {
 		Certificates: []tls.Certificate{cert},
 	}
 	s.StartTLS()
+	defer s.Close()
 
 	c := s.Client()
 	resp, err := c.Get(s.URL)
