@@ -12,7 +12,7 @@ import (
 )
 
 func ExampleNewCertificate_server() {
-	keyPEMBlock, certPEMBlock, err := tlstest.NewCertificate(&tlstest.ECDSA256{}, tlstest.Options{
+	keyPEMBlock, certPEMBlock, err := tlstest.NewCertificate(tlstest.ECDSA256(), tlstest.Options{
 		Organization: "example&co",
 		Hosts:        []string{"127.0.0.1"},
 	})
@@ -40,7 +40,7 @@ func ExampleNewCertificate_server() {
 }
 
 func ExampleNewCertificate_client() {
-	_, certPEMBlock, err := tlstest.NewCertificate(&tlstest.ECDSA256{}, tlstest.Options{
+	_, certPEMBlock, err := tlstest.NewCertificate(tlstest.ECDSA256(), tlstest.Options{
 		Organization: "example&co",
 	})
 	certPool, err := x509.SystemCertPool()

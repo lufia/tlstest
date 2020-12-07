@@ -20,21 +20,45 @@ type KeyGenerator interface {
 	GenerateKey(r io.Reader) (interface{}, error)
 }
 
-type ECDSA256 struct{}
-
-func (*ECDSA256) GenerateKey(r io.Reader) (interface{}, error) {
-	return ecdsa.GenerateKey(elliptic.P256(), r)
+type AlgoECDSA struct {
+	Curve elliptic.Curve
 }
 
-var _ KeyGenerator = &ECDSA256{}
-
-type RSA2048 struct{}
-
-func (*RSA2048) GenerateKey(r io.Reader) (interface{}, error) {
-	return rsa.GenerateKey(r, 2048)
+func ECDSA256() *AlgoECDSA {
+	return &AlgoECDSA{
+		Curve: elliptic.P256(),
+	}
 }
 
-var _ KeyGenerator = &RSA2048{}
+func (e *AlgoECDSA) GenerateKey(r io.Reader) (interface{}, error) {
+	c := e.Curve
+	if c == nil {
+		c = elliptic.P256()
+	}
+	return ecdsa.GenerateKey(c, r)
+}
+
+var _ KeyGenerator = &AlgoECDSA{}
+
+type AlgoRSA struct {
+	Bits int
+}
+
+func RSA2048() *AlgoRSA {
+	return &AlgoRSA{
+		Bits: 2048,
+	}
+}
+
+func (e *AlgoRSA) GenerateKey(r io.Reader) (interface{}, error) {
+	b := e.Bits
+	if b == 0 {
+		b = 2048
+	}
+	return rsa.GenerateKey(r, b)
+}
+
+var _ KeyGenerator = &AlgoRSA{}
 
 type Options struct {
 	Hosts        []string
